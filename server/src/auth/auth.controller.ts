@@ -14,11 +14,4 @@ export class AuthController {
     async login(@Req() req: Request){
         return this.authService.login(req.user)
     }
-
-    @UseGuards(AuthGuard('jwt'))
-    @Get()
-    async test(){
-        console.log('test')
-    }
-    
 }

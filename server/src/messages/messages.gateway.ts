@@ -1,13 +1,14 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer, ConnectedSocket } from '@nestjs/websockets';
 import { MessagesService } from './messages.service';
-import { Prisma } from '@prisma/client';
 import { Server, Socket } from 'socket.io'
 import { OnModuleInit, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtSocket } from './jwt.socket';
 
 @UseGuards(AuthGuard('wsjwt'))
-@WebSocketGateway({cors: true})
+@WebSocketGateway({cors: {
+  origin: ['http://localhost:5173']
+}})
 export class MessagesGateway implements OnModuleInit {
 
   @WebSocketServer()
@@ -21,18 +22,18 @@ export class MessagesGateway implements OnModuleInit {
   constructor(private readonly messagesService: MessagesService) {}
 
   @SubscribeMessage('createMessage')
-  async create(@MessageBody() message: string, @ConnectedSocket() client: JwtSocket) {
+  async create(@MessageBody() body: string, @ConnectedSocket() client: JwtSocket) {
     const user = client.user
-    const ret = await this.messagesService.create(message, user)
-    this.server.emit('message', {
-      user: user,
-      msg: message
+    const ret = await this.messagesService.create(body, user)
+    this.server.emit('onMessage', {
+      id: ret.id,
+      content: ret.content,
+      createdAt: ret.createdAt,
+      userId: user.userId,
+      user: {
+        username: user.username
+      },
     })
     return ret
-  }
-
-  @SubscribeMessage('findAllMessages')
-  async findAll() {
-    return this.messagesService.findAll();
   }
 }

@@ -22,8 +22,13 @@ export class MessagesService {
   async findAll() {
     return this.prisma.message.findMany({
       take: 50,
-      include: { user: true },
-      orderBy: { createdAt: 'asc'},
+      include: { 
+        user: {
+          select: {
+            username: true
+          }
+      } },
+      orderBy: { createdAt: 'desc'},
     })
   }
 }
