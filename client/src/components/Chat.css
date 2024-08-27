@@ -1,12 +1,10 @@
-/* Container for the entire chat window */
+
 div {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
-
-
 
 .submit-message{
   width: 80%;
@@ -15,11 +13,10 @@ div {
   display: inline-block;
 }
 
-/* Scrollable container */
 .scrollable-container {
   overflow-y: auto;
   width: 60%;
-  max-height: 600px; /* Adjust based on your preference */
+  max-height: 33vw; 
   overflow-y: auto;
   border: 1px solid #ccc;
   font-size: larger;
@@ -28,24 +25,27 @@ div {
   margin-bottom: 10px;
 }
 
-/* Style for messages */
 .scrollable-container div {
   margin-bottom: 10px;
 }
 
 .scrollable-container p {
   margin: 0;
-  margin-left: 0;
-  padding: 5px;
+  margin-left: 20px; /* Adjust this value to control the distance from the left */
+
+  padding: 2px;
+  text-align: left; /* Ensure text inside the <p> is left-aligned */
+  width: 100%; /* Ensure <p> takes up the full width available */
+  box-sizing: border-box; /* Include padding in width calculation */
   background-color: #1b0505;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-/* Input and button styling */
 input[type="text"] {
   width: 70%;
   padding: 8px;
+  font-size: 18px;
   margin-right: 10px;
   box-sizing: border-box;
 }

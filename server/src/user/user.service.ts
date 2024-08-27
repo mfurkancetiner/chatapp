@@ -2,11 +2,12 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
 
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private jwtService: JwtService) { }
 
   async create(createUserDto: Prisma.UserCreateInput) {
     const existingUser = await this.prisma.user.findFirst({
@@ -33,7 +34,11 @@ export class UserService {
     const created = await this.prisma.user.create({
       data:createUserDto
     })
-    return created
+
+    const payload = { sub:created.id, username: created.username }
+        return {
+            access_token: await this.jwtService.signAsync(payload),
+        }
   }
 
   async findAll() {

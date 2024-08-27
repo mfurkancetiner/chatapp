@@ -119,6 +119,7 @@ export default function LoginForm() {
                 setServerError(true)
                 setError('There has been a problem, please try again later (could not reach backend)')
             }
+            console.log(error)
 
           
       }   
@@ -131,7 +132,7 @@ export default function LoginForm() {
         <div className='wrapper'>
             <form action="" onSubmit={handleSubmit}>
                 {isLogin ? <h1>Login</h1> : <h1>Sign Up</h1>}
-                <div style={{marginBottom:"15%"}}>
+                <div>
 
                 {!isLogin &&
                     <div className="input-box">
