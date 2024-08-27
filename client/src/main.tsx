@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import { socket, WebsocketProvider } from './contexts/WebsocketContext'
-import { Websocket } from './components/Chat'
+import { Chat } from './components/Chat'
 import LoginForm from "./components/Auth";
 
 const router = createBrowserRouter([
@@ -16,7 +16,7 @@ const router = createBrowserRouter([
   },
   {
     path: "chat",
-    element: <WebsocketProvider value={socket}><Websocket/></WebsocketProvider>
+    element: <WebsocketProvider value={socket}><Chat/></WebsocketProvider>
   }
 ]);
 

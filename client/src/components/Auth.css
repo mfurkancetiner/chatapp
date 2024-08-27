@@ -1,5 +1,5 @@
 .wrapper{
-    width: 420px;
+    width: 25%;
     background: transparent;
     border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(30px);
@@ -17,9 +17,7 @@
     position: relative;
     width: 80%;
     height: 80%;
-    /* background: salmon; */
     margin: 5% 0 5% 0;
-    
 }
 
 .input-box input{
@@ -32,7 +30,7 @@
     border-radius: 40px;
     font-size: 16px;
     color: white;
-    padding: 20px 45px 20px 20px;
+    padding: 20px 60px 20px 60px;
 }
 
 .input-box input::placeholder{
@@ -41,27 +39,30 @@
 
 .input-box .icon{
     position: absolute;
-    right: 20px;
+    right: 0px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 16px;
 }
 
 .wrapper .remember-forgot{
-    display: flex;
-    justify-content: space-between;
-    font-size: 14.5px;
-    margin: -15px 0 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    gap: 70px; /* Space between the columns */
 }
 
 .remember-forgot a{
     color: white;
     text-decoration: none;
+    margin: 0 0 0 0;
+    flex: 1;
+    padding: 10px;
 }
 
 .remember-forgot a:hover{
     text-decoration: underline;
 }
+
 
 .wrapper button{
     width: 100%;

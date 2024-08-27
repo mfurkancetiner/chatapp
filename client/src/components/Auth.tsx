@@ -13,6 +13,7 @@ export default function LoginForm() {
     const [enteredInvalidCred, setEnteredInvalidCred] = useState<Boolean>(false)  
     const [serverError, setServerError] = useState<Boolean>(false)  
     const [emailExists, setEmailExists] = useState<Boolean>(false)
+    const [usernameExists, setUsernameExists] = useState<Boolean>(false)
     const [passwordMatch, setPasswordMatch] = useState<Boolean>(true)
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -34,6 +35,7 @@ export default function LoginForm() {
     const handleSubmit = (e: any) => {
         setPasswordMatch(true)
         setEmailExists(false)
+        setUsernameExists(false)
         setEnteredInvalidCred(false)
         setServerError(false)
 
@@ -56,7 +58,7 @@ export default function LoginForm() {
         }
     
         if(isLogin)
-            handleLogin(email, password)
+            handleLogin(user, password)
         else
             handleSignup(user, email, password)
     };
@@ -93,18 +95,32 @@ export default function LoginForm() {
 
       const handleSignup = async (user: string, email: string, password: string) => {
         try{
-          const res = await axios.post('http://localhost:3000/api/v1/auth/register', {
+          const res = await axios.post('http://localhost:3000/api/v1/user/register', {
               username: user,
               email: email,
               password: password
           })
-          sessionStorage.setItem('token', res.data.token)
-          sessionStorage.setItem('user', res.data.user.username)
-          navigate('/chat')
+          sessionStorage.setItem('token', res.data.access_token)
+          const decodedToken:  { sub:number, username: string, iat: number, exp: number } = jwtDecode(res.data.access_token) 
+          sessionStorage.setItem('username', decodedToken.username)
           setEmailExists(false)
-      }
-      catch(error){
-          setEmailExists(true)
+          navigate('/chat')
+        }
+        catch(error: any){
+            if(error.response){
+                if(error.response.data.message === "This email is in use"){
+                    setEmailExists(true)
+                }
+                else if(error.response.data.message === "This username is in use"){
+                    setUsernameExists(true)
+                }
+            }
+            else{
+                setServerError(true)
+                setError('There has been a problem, please try again later (could not reach backend)')
+            }
+
+          
       }   
       }
 
@@ -124,8 +140,9 @@ export default function LoginForm() {
                     </div>
                 }
                 <div className="input-box">
-                    <input value={user} type="text" onChange={(e)=>setUser(e.target.value)}placeholder="Username" maxLength={20} required/>
-                    <FaUserAlt className='icon'/>
+                    <input value={user} onChange={(e)=>setUser(e.target.value)} placeholder='Username' maxLength={20}></input>
+                    <FaUserAlt className='icon'/> 
+
                 </div>
                 <div className="input-box">
                     <input value={password} type="password" onChange={(e)=>setPassword(e.target.value)} placeholder="Password" maxLength={48} required/>
@@ -147,6 +164,10 @@ export default function LoginForm() {
                     <p className='invalid-cred'>An account with this email already exists</p>
                 )}
 
+                {!isLogin && !emailExists && usernameExists && (
+                    <p className='invalid-cred'>An account with this username already exists</p>
+                )}
+
                 {!isLogin && !emailExists && !passwordMatch && (
                 <p className='invalid-cred'>Passwords don't match</p>
                 )}
@@ -154,8 +175,8 @@ export default function LoginForm() {
                 </div>
                 {isLogin &&
                     <div className="remember-forgot">
-                        <label><input type="checkbox" />Remember me</label>
-                        <a onClick={()=>handleLogin("guest", "123456")}>Login as guest</a>
+                        <label className='remember-me'><input type="checkbox" />Remember me</label>
+                        <a className='login-guest' onClick={()=>handleLogin("guest", "123456")}>Login as guest</a>
                     </div>
                 }   
                 {isLogin ? 
