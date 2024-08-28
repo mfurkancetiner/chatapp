@@ -1,12 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { MessagesService } from './messages.service';
 
-@Controller('messages')
+@Controller('messages/:id')
 export class MessagesController {
     constructor(private readonly messagesService: MessagesService) {}
 
     @Get()
-    fetchMessages(){
-        return this.messagesService.findAll()
+    fetchMessages(@Param('id') id: string){
+        return this.messagesService.findAll(id)
     }
 }

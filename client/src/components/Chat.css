@@ -16,10 +16,11 @@ div {
 .scrollable-container {
   overflow-y: auto;
   width: 60%;
+  height: 5000px;
   max-height: 33vw; 
   overflow-y: auto;
   border: 1px solid #ccc;
-  font-size: larger;
+  font-size: 18px;
   padding: 10px;
   box-sizing: border-box;
   margin-bottom: 10px;

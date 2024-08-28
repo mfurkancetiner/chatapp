@@ -1,27 +1,35 @@
-import { Injectable, Req } from '@nestjs/common';
+import { Injectable, NotFoundException, Req } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { RoomsService } from 'src/rooms/rooms.service';
 
 @Injectable()
 export class MessagesService {
 
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService, private roomsService: RoomsService) { }
 
-  async create(message: string, user: any) {
+  async create(message: string, roomId:string, user: any) {
+    
     const data: Prisma.MessageCreateInput = {
       content: message,
       user: {
         connect: { id: user.userId }
+      },
+      room: {
+        connect: {id: roomId}
       }
     }
-    return this.prisma.message.create({
+    return await this.prisma.message.create({
       data
     })
   }
 
-  async findAll() {
-    return this.prisma.message.findMany({
+  async findAll(roomId: string) {
+    return await this.prisma.message.findMany({
       take: 50,
+      where:{
+        roomId: roomId
+      },
       include: { 
         user: {
           select: {

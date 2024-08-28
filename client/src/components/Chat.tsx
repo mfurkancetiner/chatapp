@@ -2,7 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react"
 import { WebsocketContext } from "../contexts/WebsocketContext"
 import axios from "axios"
 import './Chat.css'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 
 type MessagePayload = {
     id: number,
@@ -25,27 +25,52 @@ export const Chat = () => {
     const [messages, setMessages] = useState<MessagePayload[]>([])
     const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
+    
+    const params = useParams()
+    var roomId = params.id
+    if(!roomId){
+        roomId = import.meta.env.VITE_DEFAULT_ROOM
+    }
+    
+    const roomExists = async () => {
+        const _ =  await axios.get(`${import.meta.env.VITE_API_URL}/rooms/${roomId}`, {
+            headers: {
+                authorization: `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
+        if(_.data.length === 0){
+            console.log(_)
+            return(<p>Room does not exist</p>)
+            
+        }
+        console.log(_)
+    }
+    
+    roomExists()
+
     //scrolls down to the bottom and if there are new maessages
     useEffect(() => {
         if (scrollableContainerRef.current) {
           scrollableContainerRef.current.scrollTop = scrollableContainerRef.current.scrollHeight;
         }
       }, [messages]);
-    
+
+
     useEffect(() => {
 
         if(sessionStorage.getItem('token') === null){
             navigate('/')
         }
-
+        
         if(socket){
             socket.on('connect', () => {
+                socket.emit('joinRoom', roomId)
             })
 
             const fetchData = async () => {
                 setLoading(true)
                 try {
-                    const response: any = await axios.get('http://localhost:3000/api/v1/messages', {
+                    const response: any = await axios.get(`${import.meta.env.VITE_API_URL}/messages/${roomId}`, {
                         headers: {
                         authorization: `Bearer ${sessionStorage.getItem('token')}`
                     }});
@@ -82,8 +107,14 @@ export const Chat = () => {
     if (error) return <p>Error: {error} </p>;
 
     const onSubmit = () => {
-        socket!.emit('createMessage', value)
-        setValue('')
+        if(value.length !== 0){
+            socket!.emit('createMessage', {message: value, roomId: roomId})
+            setValue('')
+        }
+    }
+
+    const randomColor = () => {
+        return Math.floor(Math.random() * 900000) + 100000;
     }
 
     return(

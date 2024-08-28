@@ -16,7 +16,7 @@ const router = createBrowserRouter([
     element: <LoginForm></LoginForm>,
   },
   {
-    path: "chat",
+    path: "chat/:id?",
     element: <WebsocketProvider><Chat/></WebsocketProvider>
   }
 ]);

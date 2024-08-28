@@ -95,7 +95,7 @@ export default function LoginForm() {
 
       const handleSignup = async (user: string, email: string, password: string) => {
         try{
-          const res = await axios.post('http://localhost:3000/api/v1/user/register', {
+          const res = await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, {
               username: user,
               email: email,
               password: password
