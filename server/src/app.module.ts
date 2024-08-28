@@ -6,6 +6,7 @@ import { PrismaService } from './prisma/prisma.service';
 import { UserModule } from './user/user.module';
 import { MessagesModule } from './messages/messages.module';
 
+
 @Module({
   imports: [AuthModule, UserModule, MessagesModule],
   controllers: [AppController],

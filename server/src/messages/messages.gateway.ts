@@ -16,6 +16,7 @@ export class MessagesGateway implements OnModuleInit {
 
   onModuleInit() {
     this.server.on('connection', (socket) => {
+      socket.join('def')
     })
   }
 
@@ -25,7 +26,7 @@ export class MessagesGateway implements OnModuleInit {
   async create(@MessageBody() body: string, @ConnectedSocket() client: JwtSocket) {
     const user = client.user
     const ret = await this.messagesService.create(body, user)
-    this.server.emit('onMessage', {
+    this.server.to('def').emit('onMessage', {
       id: ret.id,
       content: ret.content,
       createdAt: ret.createdAt,

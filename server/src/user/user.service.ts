@@ -72,7 +72,7 @@ export class UserService {
     if(!user){
       throw new NotFoundException(`User with id ${id} not found`)
     }
-    const updated = this.prisma.user.update({
+    const updated = await this.prisma.user.update({
       where:{id},
       data:updateUserDto
     })
@@ -84,7 +84,7 @@ export class UserService {
     if(!user){
       throw new NotFoundException(`User with id ${id} not found`)
     }
-    const removed = this.prisma.user.delete({
+    const removed = await this.prisma.user.delete({
       where:{id},
     })
     return removed
