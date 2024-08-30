@@ -10,8 +10,7 @@ import { Throttle } from '@nestjs/throttler';
 export class AuthController {
 
     constructor(private authService: AuthService) { }
-
-
+ 
     @Post('login')
     async login(@Req() req: Request){
         return this.authService.login(req.user)

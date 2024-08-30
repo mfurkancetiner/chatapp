@@ -67,14 +67,15 @@ export default function LoginForm() {
         
         var res
         try{
-            res = await axios.post('http://localhost:3000/api/v1/auth/login', {
+            res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 username: username,
                 password: password
             })
+            console.log(res)
         }
         catch(error: any){
             if(error.response){
-                if(error.response.status === 401){
+                if(error.response.status === 404){
                     setEnteredInvalidCred(true)    
                     setError('Wrong email or password')
                 }
@@ -141,7 +142,7 @@ export default function LoginForm() {
                     </div>
                 }
                 <div className="input-box">
-                    <input value={user} onChange={(e)=>setUser(e.target.value)} placeholder='Username' maxLength={20}></input>
+                    <input value={user} onChange={(e)=>setUser(e.target.value)} placeholder='Username' maxLength={13}></input>
                     <FaUserAlt className='icon'/> 
 
                 </div>
